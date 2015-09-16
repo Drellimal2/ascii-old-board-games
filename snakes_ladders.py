@@ -3,14 +3,19 @@ from random import *
 from os import system
 
 
-HEADER = '\033[95m'
-OKBLUE = '\033[31m'
-OKGREEN = '\033[92m'
-WARNING = '\033[93m'
-FAIL = '\033[91m'
+BLACK = '\033[0;30m'
+SNAKES = '\033[1;43m'
+F_WHITE = '\033[37m'
+B_T_GREEN = '\033[1;42m'
+B_L_GREEN = '\033[42m'
+WINNING = '\033[1;45m\033[1;37m'
+LADDERS = '\033[1;46m'
+P1 = '\033[1;41m'
+P2 = '\033[1;44m'
+
+
 ENDC = '\033[0m'
-BOLD = '\033[1m'
-UNDERLINE = '\033[4m'
+
 """
 Created on Fri Sep 11 14:48:16 2015
 
@@ -19,43 +24,55 @@ Created on Fri Sep 11 14:48:16 2015
 
 def add_padd2(x):
     if x <10:
-        return '0' + str(x)
+        return '0' + str(x) 
     else:
         return ''  + str(x)
     
 def add_padd(x):
     if x <10:
-        return ' 0' + str(x)
+        return B_L_GREEN + F_WHITE + '  0' + str(x) + ' ' + ENDC
     elif x <100:
-        return ' '  + str(x)
+        return B_L_GREEN + F_WHITE+'  '  + str(x) + ' ' + ENDC
     else:
-        return str(100)
+        return WINNING + ' '+ str(100)+ ' ' + ENDC
+
+
 def print_board(board, players):
+    print (B_T_GREEN + "_____"+ ENDC + " ") *10
+
     for x in range(10):    
-        print "_____ "*10
+        # print (B_L_GREEN + "_____"+ ENDC + " ") *10
         s = x*10
         e = x*10+10
         board2 = []
+        board4 = []
+        b_h = bottom_halves[::-1]
+        board4 += b_h[s:e]
         board2 += board[s:e]
         for y in range(2):
             b = (99 - players[y]+1)
             if b in range(s,e):
                 a = b%10
                 if y == 0:
-                    board2[a] = "A/-"
+                    board2[a] = P1 +" A" + "   " + ENDC
+                    board4[a] = P1 + "_____"+ ENDC + " "
                 else:
                     if players[0] == players[1]:
-                        board2[a] = board2[a][:-1] +"B"
+                        board2[a] = board2[a][:-6] + ENDC + P2 +"B "+ENDC
+                        board4[a] = board4[a][:-7] + ENDC + P2 +"__"+ENDC + " "
                     else:
-                        board2[a] = "-/B"
+                        board2[a] =  P2 + "   " +  "B " + ENDC
+                        board4[a] = P2 + "_____"+ ENDC + " "
                     
         if x%2 == 0:
-            
-            print " " + " | ".join(board2)
-        else:
-            print " " + " | ".join(board2[::-1])
+            print   "|".join(board2)
+            print   "".join(board4)
 
-    print OKBLUE + "_____ "*10 + ENDC
+        else:
+            print  "|".join(board2[::-1])
+            print   "".join(board4[::-1])
+
+
     
 
 def shuffle():
@@ -69,14 +86,14 @@ def play(players, p_num, moves, board):
         players[p_num] += moves
         if players[p_num] == 100:
             return "Player " + str(p_num+1) + " rolled " + str(moves) + " to win."
-        ttest = board[players[p_num]]
+        ttest = board[players[p_num]-1]
         if not ttest.isdigit():
-            if ttest[0] == 'v' or ttest[0] == '^':
-                players[p_num] = int(ttest[1:])
-                if ttest[0] == 'v':
-                    return "Player " + str(p_num+1) +" hit Snake to " + ttest[1:]
+            if ttest[7:9] == ' v' or ttest[7:9] == ' ^':
+                players[p_num] = int(ttest[-7:-5])
+                if ttest[7:9] == ' v':
+                    return "Player " + str(p_num+1) + " rolled " + str(moves) +  " and hit Snake to " + ttest[-7:-5]
                 else:
-                    return "Player " + str(p_num+1) + " took ladder to " + ttest[1:]
+                    return "Player " + str(p_num+1) + " rolled " + str(moves) +  " and took ladder to " + ttest[-7:-5]
             
         return "Player " + str(p_num+1) + " rolled " + str(moves)
     
@@ -100,13 +117,18 @@ def add_snakes_ladders(board):
             if d not in used:
                 break
         used += [a,b,c,d]
-        board[a-1] = 'v' + add_padd2(b)
-        board[c-1] = '^' + add_padd2(d)
+        board[a-1] = SNAKES +' v' + add_padd2(b) + ' ' + ENDC
+        bottom_halves[a-1] = SNAKES + "_____"+ ENDC + " "
+        board[c-1] = LADDERS + ' ^' + add_padd2(d) + ' ' + ENDC
+        bottom_halves[c-1] = LADDERS + "_____"+ ENDC + " "        
+        print board[a-1][7:9]
+    y = raw_input()
     return board
     
         
 
 def game(board, players):
+    system('cls')
     count = 0
     move = 0
     z = ""
@@ -130,6 +152,8 @@ def game(board, players):
     
     
 board = [add_padd(x) for x in range(1,101)]
+bottom_halves = [(B_L_GREEN + "_____"+ ENDC + " ") for x in range(100)]
+bottom_halves[99] = WINNING + "_____"+ ENDC + " "
 players = [1,1]
 
   
