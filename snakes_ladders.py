@@ -1,20 +1,4 @@
 # -*- coding: utf-8 -*-
-from random import *
-from os import system
-
-
-BLACK = '\033[0;30m'
-SNAKES = '\033[1;43m'
-F_WHITE = '\033[37m'
-B_T_GREEN = '\033[1;42m'
-B_L_GREEN = '\033[42m'
-WINNING = '\033[1;45m\033[1;37m'
-LADDERS = '\033[1;46m'
-P1 = '\033[1;41m' + F_WHITE
-P2 = '\033[1;44m' + F_WHITE
-
-
-ENDC = '\033[0m'
 
 """
 Created on Fri Sep 11 14:48:16 2015
